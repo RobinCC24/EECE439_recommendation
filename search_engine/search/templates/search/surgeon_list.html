@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surgeon List</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Surgeon List</h1>
+    <a href="{% url 'surgeon-create' %}">Add New Surgeon</a>
+    <a href="{% url 'bulk-upload' %}">Bulk Add Surgeons</a>
+
+    <form method="get">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ request.GET.name }}" placeholder="e.g., John Doe">
+    
+        <label for="specialty">Specialty:</label>
+        <input type="text" id="specialty" name="specialty" value="{{ request.GET.specialty }}" placeholder="e.g., Cardiologist">
+    
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" value="{{ request.GET.city }}" placeholder="e.g., New York">
+    
+        <label for="max_fees">Max Fees:</label>
+        <input type="number" id="max_fees" name="max_fees" value="{{ request.GET.max_fees }}" placeholder="e.g., 300">
+
+        <label for="min_rating">Min Rating:</label>
+        <input type="number" id="min_rating" name="min_rating" step="0.01" min="0" max="5" 
+           value="{{ request.GET.min_rating }}" placeholder="e.g., 4.5">
+    
+        <button type="submit">Filter</button>
+        <a href="{% url 'surgeon-list' %}">Clear Filters</a>
+    </form>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>
+                    <a href="?name={{ request.GET.name }}&specialty={{ request.GET.specialty }}&city={{ request.GET.city }}&max_fees={{ request.GET.max_fees }}&min_rating={{ request.GET.min_rating }}&sort=first_name&direction={{ next_directions.first_name }}">Name</a>
+                </th>
+                <th>
+                    <a href="?name={{ request.GET.name }}&specialty={{ request.GET.specialty }}&city={{ request.GET.city }}&max_fees={{ request.GET.max_fees }}&min_rating={{ request.GET.min_rating }}&sort=specialty&direction={{ next_directions.specialty }}">Specialty</a>
+                </th>
+                <th>
+                    <a href="?name={{ request.GET.name }}&specialty={{ request.GET.specialty }}&city={{ request.GET.city }}&max_fees={{ request.GET.max_fees }}&min_rating={{ request.GET.min_rating }}&sort=city&direction={{ next_directions.city }}">City</a>
+                </th>
+                <th>Address</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>
+                    <a href="?name={{ request.GET.name }}&specialty={{ request.GET.specialty }}&city={{ request.GET.city }}&max_fees={{ request.GET.max_fees }}&min_rating={{ request.GET.min_rating }}&sort=fees&direction={{ next_directions.fees }}">Fees</a>
+                </th>
+                <th>
+                    <a href="?name={{ request.GET.name }}&specialty={{ request.GET.specialty }}&city={{ request.GET.city }}&max_fees={{ request.GET.max_fees }}&min_rating={{ request.GET.min_rating }}&sort=rating&direction={{ next_directions.rating }}">Rating</a>
+                </th>
+                <th>Hospital</th>
+                <th>Available Hours</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for surgeon in page_obj %}
+            <tr>
+                <td>{{ surgeon.first_name }} {{ surgeon.last_name }}</td>
+                <td>{{ surgeon.specialty }}</td>
+                <td>{{ surgeon.city }}</td>
+                <td>{{ surgeon.address }}</td>
+                <td>{{ surgeon.phone_number }}</td>
+                <td>{{ surgeon.email }}</td>
+                <td>${{ surgeon.fees }}</td>
+                <td>{{ surgeon.rating|default:"N/A" }}</td>
+                <td>{{ surgeon.hospital_name }}</td>
+                <td>{{ surgeon.available_hours }}</td>
+                <td>
+                    <a href="{% url 'surgeon-update' surgeon.id %}">Edit</a>
+                    <a href="{% url 'surgeon-delete' surgeon.id %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="11">No surgeons available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</body>
+</html>
