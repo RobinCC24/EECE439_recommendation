@@ -25,8 +25,15 @@ SECRET_KEY = 'django-insecure-1oynu7(=+m9v1ocoo-pib6_hcd^#dsg*ybwqktk074*)o0%8=)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'recommendation1-h7evcncqgwd7hjgu.eastus-01.azurewebsites.net',
+    '127.0.0.1',  # Add this for local development
+    'localhost',  # Add this for local development
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://recommendation1-h7evcncqgwd7hjgu.eastus-01.azurewebsites.net',
+]
 
 # Application definition
 

@@ -1,146 +1,146 @@
 /* General Body Styling */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f9;
-  color: #333;
-}
-
-/* Page Header */
-h1 {
-  text-align: center;
-  margin-top: 20px;
-  color: #444;
-}
-
-/* Add New Surgeon Button */
-a {
-  display: inline-block;
-  text-decoration: none;
-  background-color: #28a745;
-  color: white;
-  padding: 10px 20px;
-  margin: 20px auto;
-  border-radius: 5px;
-  text-align: center;
-}
-
-a:hover {
-  background-color: #218838;
-}
-
-/* Table Styling */
-table {
-  width: 90%;
-  margin: 20px auto;
-  border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-thead {
-  background-color: #007bff;
-  color: white;
-}
-
-th, td {
-  text-align: left;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-}
-
-tbody tr {
-  background-color: #e3f2fd; /* Light blue for all rows */
-}
-
-tbody tr:hover {
-  background-color: #d0e7fa; /* Slightly darker blue on hover */
-}
-
-/* Action Buttons */
-td a {
-  padding: 5px 10px;
-  border-radius: 3px;
-  font-size: 0.9em;
-}
-
-td a:first-child {
-  background-color: #ffc107;
-  color: black;
-}
-
-td a:first-child:hover {
-  background-color: #e0a800;
-}
-
-td a:last-child {
-  background-color: #dc3545;
-  color: white;
-}
-
-td a:last-child:hover {
-  background-color: #c82333;
-}
-
-/* Empty Table Row */
-tbody tr td[colspan="11"] {
-  text-align: center;
-  color: #999;
-  font-style: italic;
-}
-
-/* Responsive Table */
-@media screen and (max-width: 768px) {
-  table, thead, tbody, th, td, tr {
-      display: block;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
   }
-
-  thead tr {
-      display: none;
+  
+  /* Page Header */
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #444;
   }
-
-  tr {
-      margin-bottom: 20px;
+  
+  /* Add New Surgeon Button */
+  a {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    margin: 20px auto;
+    border-radius: 5px;
+    text-align: center;
   }
-
-  td {
-      text-align: right;
-      padding-left: 50%;
-      position: relative;
+  
+  a:hover {
+    background-color: #218838;
   }
-
-  td:before {
-      content: attr(data-label);
-      position: absolute;
-      left: 10px;
-      width: 45%;
-      text-align: left;
-      font-weight: bold;
+  
+  /* Table Styling */
+  table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-}
-
-/* Pagination Styling */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.pagination a {
-  margin: 0 5px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  text-decoration: none;
-  color: #007bff;
-}
-
-.pagination a:hover {
-  background-color: #f0f0f0;
-}
-
-.pagination .current {
-  padding: 8px 12px;
-  font-weight: bold;
-  background-color: #007bff;
-  color: white;
-}
+  
+  thead {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+  }
+  
+  tbody tr {
+    background-color: #e3f2fd; /* Light blue for all rows */
+  }
+  
+  tbody tr:hover {
+    background-color: #d0e7fa; /* Slightly darker blue on hover */
+  }
+  
+  /* Action Buttons */
+  td a {
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  
+  td a:first-child {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  td a:first-child:hover {
+    background-color: #e0a800;
+  }
+  
+  td a:last-child {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  td a:last-child:hover {
+    background-color: #c82333;
+  }
+  
+  /* Empty Table Row */
+  tbody tr td[colspan="11"] {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+  }
+  
+  /* Responsive Table */
+  @media screen and (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+  
+    thead tr {
+        display: none;
+    }
+  
+    tr {
+        margin-bottom: 20px;
+    }
+  
+    td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+  
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+    }
+  }
+  
+  /* Pagination Styling */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination a {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .pagination a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .pagination .current {
+    padding: 8px 12px;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+  }
