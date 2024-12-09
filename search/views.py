@@ -1,11 +1,15 @@
 # search/views.py
+from decimal import Decimal
 from django.core.paginator import Paginator
 import pandas as pd
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from sklearn.neighbors import NearestNeighbors
 from .models import Surgeon
 from .forms import CSVUploadForm, SurgeonForm
 from django.db.models import Q
+from sklearn.preprocessing import MinMaxScaler
+import spacy
 
 def surgeon_list(request):
     name = request.GET.get('name', '')
@@ -145,4 +149,82 @@ def bulk_upload_view(request):
 
     return render(request, 'search/bulk_upload.html', {'form': form})
 
+
+nlp = spacy.load('en_core_web_sm')
+
+def extract_preferences(query):
+    doc = nlp(query)
+    city = None
+    min_rating = None
+    max_fees = None
+
+    keywords = {
+        "top-rated": 5,  
+        "high rating": 4.0,
+        "low rating": 2.5,  
+        "cheap": 1000, 
+        "affordable": 2500,  
+        "expensive": 7000  
+    }
+
+    for word in query.lower().split():
+        if word in keywords:
+            if "rating" in word or "rated" in word:
+                min_rating = keywords[word]
+            elif "cheap" in word or "affordable" in word:
+                max_fees = keywords[word]
+            elif "expensive" in word:
+                max_fees = keywords[word]  
+
+    for ent in doc.ents:
+        if ent.label_ == "GPE":  
+            city = ent.text
+        elif ent.label_ == "CARDINAL":  
+            num = float(ent.text)
+            if 0 <= num <= 5:
+                min_rating = num
+            elif num > 5:
+                max_fees = num
+
+    return city, min_rating, max_fees
+
+def surgeon_recommendations(request):
+    if request.GET.get('query', ''):
+        query = request.GET.get('query', '')
+        
+        city, min_rating, max_fees = extract_preferences(query)
+        
+        min_rating = min_rating if min_rating is not None else 5
+        max_fees = max_fees if max_fees is not None else 1000
+
+        surgeons = Surgeon.objects.all()
+        if city:
+            surgeons = surgeons.filter(city__icontains=city)
+        
+        if not surgeons.exists():
+            return render(request, 'search/recommendations.html', {'recommendations': []})
+
+        surgeon_data = []
+        surgeon_objects = []
+        for surgeon in surgeons:
+            surgeon_data.append([float(surgeon.rating), float(surgeon.fees)])
+            surgeon_objects.append(surgeon)
+
+        scaler = MinMaxScaler()
+        normalized_data = scaler.fit_transform(surgeon_data)
+
+        user_vector = scaler.transform([[min_rating, max_fees]])
+
+        knn = NearestNeighbors(n_neighbors=5, metric='euclidean')
+        knn.fit(normalized_data)
+        distances, indices = knn.kneighbors(user_vector)
+
+        recommended_surgeons = [surgeon_objects[i] for i in indices.flatten()]
+
+        return render(request, 'search/recommendations.html', {
+            'recommendations': recommended_surgeons,
+            'query': query  
+        })
+    else:
+        return render(request, 'search/recommendations.html', {'recommendations': []})
 
