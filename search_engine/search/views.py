@@ -11,11 +11,10 @@ from django.db.models import Q
 from sklearn.preprocessing import MinMaxScaler
 import spacy
 
-
 def surgeon_list(request):
-    name = request.GET.get('name', '').strip()
-    specialty = request.GET.get('specialty', '').strip()
-    city = request.GET.get('city', '').strip()
+    name = request.GET.get('name', '')
+    specialty = request.GET.get('specialty', '')
+    city = request.GET.get('city', '')
     max_fees = request.GET.get('max_fees', None)
     min_rating = request.GET.get('min_rating', None)
     sort = request.GET.get('sort', 'first_name')
@@ -24,23 +23,11 @@ def surgeon_list(request):
     surgeons = Surgeon.objects.all()
 
     if name:
-        # Split the name input into parts (e.g., ["John", "Doe"])
-        name_parts = name.split()
-        
-        # Filter by first and last name parts
-        if len(name_parts) == 1:
-            # If only one part is provided, search both first_name and last_name
-            surgeons = surgeons.filter(Q(first_name__icontains=name_parts[0]) | Q(last_name__icontains=name_parts[0]))
-        elif len(name_parts) > 1:
-            # If multiple parts are provided, assume first_name and last_name
-            surgeons = surgeons.filter(
-                Q(first_name__icontains=name_parts[0], last_name__icontains=name_parts[1]) |
-                Q(first_name__icontains=name_parts[1], last_name__icontains=name_parts[0])  # Handle reversed order
-            )
+        surgeons = surgeons.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
     if specialty:
         surgeons = surgeons.filter(specialty__icontains=specialty)
     if city:
-        surgeons = surgeons.filter(Q(city__icontains=city) | Q(city__icontains=city.split(",")[0]))
+        surgeons = surgeons.filter(city__icontains=city)
     if max_fees:
         try:
             max_fees = float(max_fees)
@@ -193,27 +180,11 @@ def extract_preferences(query):
         if ent.label_ == "GPE":  
             city = ent.text
         elif ent.label_ == "CARDINAL":  
-            # Handle phrases like "less than 4000" or "more than 3"
-            text = ent.text.lower()
-            if "less than" in text:
-                try:
-                    max_fees = float(text.replace("less than", "").strip())
-                except ValueError:
-                    pass
-            elif "more than" in text:
-                try:
-                    min_rating = float(text.replace("more than", "").strip())
-                except ValueError:
-                    pass
-            else:
-                try:
-                    num = float(text)
-                    if 0 <= num <= 5:  # Assume it's a rating
-                        min_rating = num
-                    elif num > 5:      # Assume it's a fee
-                        max_fees = num
-                except ValueError:
-                    pass
+            num = float(ent.text)
+            if 0 <= num <= 5:
+                min_rating = num
+            elif num > 5:
+                max_fees = num
 
     return city, min_rating, max_fees
 
